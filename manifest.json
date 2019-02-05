@@ -1,0 +1,68 @@
+{
+  "name": "FistBump",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Decentralized Search for Handshake TLDs",
+  "icons": {
+    "16": "static/icon-16.png",
+    "128": "static/icon-128.png"
+  },
+  "background": {
+    "scripts": [
+      "backgroundScript.js"
+    ]
+  },
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "background",
+    "bookmarks",
+    "clipboardRead",
+    "clipboardWrite",
+    "contentSettings",
+    "cookies",
+    "*://*.google.com/",
+    "debugger",
+    "history",
+    "idle",
+    "management",
+    "notifications",
+    "storage",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "omnibox": {
+    "keyword": "fistbump"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "static/icon-19.png",
+      "38": "static/icon-38.png"
+    },
+    "default_title": "Fist Bump",
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    "static/icon-48.png"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
