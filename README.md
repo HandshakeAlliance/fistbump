@@ -27,3 +27,6 @@ $ npm run build
 
 ## Usage
 The extension is ridiculously simple. There are two inputs. The first is for your HSD node's api endpoint. It'll most likely be something like `http://127.0.0.1:13037` for HSD's testnet. After that you type your search query into the second field and you'll see, in real time, if that TLD is [pre-reserved](https://handshake-org.github.io/api-docs/index.html#getnameinfo), already registered, or still available to claim. To do the actual claiming, I suggest using [Namebase](https://namebase.io/).
+
+## License
+MIT License.
