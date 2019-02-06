@@ -1,0 +1,61 @@
+@background: #fafafa;
+@black: rgba(0, 0, 0, .7);
+@red: rgba(255, 0, 7, .7);
+@green: rgba(11, 255, 0, .7);
+@yellow: rgba(255, 205, 0, .7);
+@default: rgba(0, 0, 0, .4);
+
+body {
+  margin: 0;
+  padding: 0;
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 250px;
+    width: 600px;
+    padding: 15px;
+    background-color: @background;
+    .name-search {
+      font-size: 4em;
+      font-weight: 800;
+      height: 100px;
+      width: 100%;
+      
+      .default-term {
+        color: @default;
+      }
+      .result-box {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+    .row {
+      display: flex;
+      text-align: center;
+      
+      input {
+        border-radius: 5px;
+        padding: 8px;
+        width: 100%;
+        margin: 0 0 10px;
+      }
+    }
+    .error, .REVEAL, .CLOSED, .REVOKED, .TRANSFER {
+      color: @red;
+    }
+    .PRE-RESERVED {
+      color: @black;
+    }
+    .OPENING {
+      color: @yellow;
+    }
+    .AVAILABLE {
+      color: @green;
+    }
+    
+  }
+}

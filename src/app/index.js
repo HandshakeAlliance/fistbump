@@ -1,45 +1,55 @@
 import React from 'react';
 import url from 'url';
+import './index.less';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      apiUrl: '',
+      apiUrl: 'http://127.0.0.1:13037/',
       searchTerm: '',
       reserved: false,
       state: ''
     };
     this.updateAPIEndpoint = this.updateAPIEndpoint.bind(this);
+    this.saveAPIEndpoint = this.saveAPIEndpoint.bind(this);
     this.searchNames = this.searchNames.bind(this);
+  }
+  componentDidMount() {
+      chrome.storage.local.get(['apiEndpoint'], (storage) => {
+        const deserializedEndpoint = JSON.parse(storage.apiEndpoint) || '';
+        this.setState({ apiUrl: deserializedEndpoint });
+      });
   }
   render() {
     return (
-      <div>
-        <div>
-          <input type="text" 
-                 value={this.state.apiUrl.href || ''} 
-                 onChange={this.updateAPIEndpoint} />
-        </div>
-        <div>
-          <input type="text" 
-                 onChange={this.searchNames} />
-        </div>
-        <div>
+      <div className="container">
+        <div className="row name-search">
           {(this.state.error)
-            ? <span style={{color:'red'}}>{this.state.error}</span>
-            : <span>
+            ? <span className="error">{this.state.error}</span>
+            : <div className="result-box">
                 <span 
-                  className={(this.state.reserved) ? 'isReserved' : 'available'}
-                  style={(this.state.reserved) ? {color: 'red'} : {color: 'green'}} >
-                  {this.state.searchTerm}: 
+                  className={this.state.state} >
+                  {this.state.searchTerm || <span className="default-term">Search for a name</span>} 
                 </span>
                 <span 
-                  style={(this.state.reserved) ? {color: 'red'} : {color: 'green'}} >
+                  className={this.state.state} >
                   {this.state.state}
                 </span>
-              </span>
+              </div>
           }
+        </div>
+        <div className="row">
+          <input type="text" 
+                 placeholder='http://127.0.0.1:13037/'
+                 value={this.state.apiUrl.href || ''} 
+                 onChange={this.updateAPIEndpoint}
+                 onBlur={this.saveAPIEndpoint} />
+        </div>
+        <div className="row">
+          <input type="text" 
+                 placeholder='fistbump'
+                 onChange={this.searchNames} />
         </div>
       </div>
     );
@@ -47,6 +57,14 @@ export default class App extends React.Component {
   updateAPIEndpoint(e) {
     const parsedUrl = url.parse(e.target.value);
     this.setState({ apiUrl: parsedUrl });
+  }
+  saveAPIEndpoint(e) {
+    if (!this.state.apiUrl) {
+        return chrome.storage.local.remove('apiEndpoint');
+    }
+    
+    const serializedEndpoint = JSON.stringify(this.state.apiUrl);
+    chrome.storage.local.set({ apiEndpoint: serializedEndpoint });
   }
   searchNames(e) {
     this.setState({ error: null })
@@ -65,15 +83,20 @@ export default class App extends React.Component {
     .then((data) => {
       if (data.error) return this.setState({ error: data.error.message });
       
-      let reserved;
-      if (!data.result.info ) {
+      let reserved, state;
+      if (!data.result.info && !data.result.start.reserved) {
         reserved = false;  
+        state = 'AVAILABLE';
+      } else if (!data.result.info && data.result.start.reserved) {
+        reserved = true;
+        state = 'PRE-RESERVED';
       } else if (data.result.info.state != 'BIDDING') {
         reserved = true;
+        state = data.result.info.state;
       } else {
         reserved = false;
+        state = 'AVAILABLE';
       }
-      const state = (data.result.info) ? data.result.info.state : 'AVAILABLE';
       
       this.setState({ reserved, searchTerm, state });
     })
