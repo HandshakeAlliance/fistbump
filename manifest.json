@@ -13,7 +13,7 @@
     ]
   },
   "permissions": [
-    "storage",
+    "storage"
   ],
   "options_ui": {
     "page": "options.html",
