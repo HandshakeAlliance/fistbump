@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     backgroundScript: path.join(__dirname, 'src/background-script/index.js'), 
-    popup: path.join(__dirname, 'src/popup/index.js'), 
+    popup: ['@babel/polyfill', path.join(__dirname, 'src/popup/index.js')],
     options: path.join(__dirname, 'src/options/index.js'),
     contentScript: path.join(__dirname, 'src/content-script/index.js'),
   },
