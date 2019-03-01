@@ -12,16 +12,16 @@ body {
   .container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    height: 250px;
+    justify-content: flex-start;
+    height: 400px;
     width: 600px;
     padding: 15px;
     background-color: @background;
+    
     .name-search {
       font-size: 4em;
       font-weight: 800;
       height: 100px;
-      width: 100%;
       
       .default-term {
         color: @default;
@@ -34,20 +34,48 @@ body {
       }
     }
     .row {
-      display: flex;
-      text-align: center;
-      
-      input {
-        border-radius: 5px;
-        padding: 8px;
-        width: 100%;
-        margin: 0 0 10px;
+      text-align: left;
+      &.searchForm {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        
+        input {
+          border: 1px solid #dfdfdf;
+          border-radius: 5px;
+          padding: 8px;
+          width: 40%;
+          margin: 0 5% 10px 0;
+          
+          &.chainUp {
+            border-color: @green;
+          }
+          &.chainDown {
+            border-color: @red;
+          }
+        }
+        .trackButton {
+          width: 10%;
+          padding: 8px;
+          border-radius: 5px;
+        }
       }
-      .trackButton {
-        width: 50px;
-      }
-      .trackedList {
-        text-align: left;
+          
+      &.trackedList {
+        overflow-y: scroll;
+        ul {
+          text-align: left;
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          li {
+            padding: 20px;
+            margin: 0 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          }
+        }
       }
     }
     .error, .REVEAL, .CLOSED, .REVOKED, .TRANSFER {

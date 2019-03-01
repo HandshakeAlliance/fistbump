@@ -10,6 +10,7 @@ export default class App extends React.Component {
       searchTerm: '',
       reserved: false,
       state: '',
+      chainState: false,
       trackedNames: new Map()
     };
     this.updateAPIEndpoint = this.updateAPIEndpoint.bind(this);
@@ -17,6 +18,7 @@ export default class App extends React.Component {
     this.trackName = this.trackName.bind(this);
     this.searchNames = this.searchNames.bind(this);
     this.updateTrackedNameInfo = this.updateTrackedNameInfo.bind(this);
+    this.checkChainState = this.checkChainState.bind(this);
   }
   componentDidMount() {
       // chrome.storage.local.remove('trackedNames');
@@ -25,6 +27,7 @@ export default class App extends React.Component {
         const trackedNames = (storage.trackedNames) ? JSON.parse(storage.trackedNames) : [];
         this.setState({ apiUrl }, () => {
           this.updateTrackedNameInfo(trackedNames);
+          this.checkChainState();
         });
       });
   }
@@ -64,29 +67,25 @@ export default class App extends React.Component {
               </div>
           }
         </div>
-        <div className="row">
+        <div className="row searchForm">
           <input type="text" 
+                 placeholder='Search Term'
+                 value={this.state.searchTerm}
+                 onChange={this.searchNames} />
+          <input type="text" 
+                 className={(this.state.chainState) ? 'chainUp' : 'chainDown'}
                  placeholder='http://127.0.0.1:13037/'
                  value={this.state.apiUrl.href || ''} 
                  onChange={this.updateAPIEndpoint}
                  onBlur={this.saveAPIEndpoint} />
+          <button className="trackButton"
+                  disabled={!this.state.searchTerm}
+                  onClick={this.trackName} >
+            Track
+          </button>
         </div>
-        <div className="row">
-          <input type="text" 
-                 placeholder='fistbump'
-                 value={this.state.searchTerm}
-                 onChange={this.searchNames} />
-        </div>
-        {this.state.searchTerm &&
-          <div className="row">
-            <button className="trackButton"
-                    onClick={this.trackName} >
-              Track
-            </button>
-          </div>
-        }
-          <div className="row">
-            <ul className="trackedList">
+          <div className="row trackedList">
+            <ul>
             {trackedNamesList}
             </ul>
           </div>
@@ -114,6 +113,22 @@ export default class App extends React.Component {
     
     const serializedEndpoint = JSON.stringify(this.state.apiUrl);
     chrome.storage.local.set({ apiEndpoint: serializedEndpoint });
+  }
+  async checkChainState() {
+    const { protocol, host, auth } = this.state.apiUrl;
+    const encodedAuth = window.btoa(auth);
+    
+    return fetch(`${protocol}//${host}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Basic ${encodedAuth}`
+      }
+    })
+    .then(res => res.json())
+    .then(res => {
+      const chainState = (res && res.network);
+      this.setState({ chainState });
+    });
   }
   async trackName(e) {
     const term = this.state.searchTerm;
