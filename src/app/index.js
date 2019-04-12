@@ -36,17 +36,32 @@ export default class App extends React.Component {
     this.state.trackedNames.forEach((value, key) => {
       trackedNamesList.push(
         <li key={key}>
-          <a href="#" 
-             onClick={() => { this.setState({ searchTerm: key }, () => { 
-               this.searchNames({target: {value: key}}) }) }}>
-            {key}
-          </a>
-            &middot; Block {value.result.start.start} &middot; Available on Mainnet
-          ~{value.result.start.week} weeks after launch &middot; {(value.result.info) ? value.result.info.state : ''}
-          <button className="unTrackButton"
-                  onClick={() => { this.unTrackName(key) }} >
-            x
-          </button>
+          <table>
+            <tr>
+              <td>
+                <a href="#"
+                   onClick={() => { this.setState({ searchTerm: key }, () => {
+                     this.searchNames({target: {value: key}}) }) }}>
+                  {key}
+                </a>
+              </td>
+              <td>
+                Block {value.result.start.start}
+              </td>
+              <td>
+                Available on Mainnet ~{value.result.start.week} weeks after launch
+                <br/>
+                {(value.result.info) ? value.result.info.state + ': ' : ''}
+                {this.getNextState(value.result)}
+              </td>
+              <td>
+                <button className="unTrackButton"
+                        onClick={() => { this.unTrackName(key) }} >
+                  x
+                </button>
+              </td>
+            </tr>
+          </table>
         </li>
       );
     })
@@ -182,5 +197,26 @@ export default class App extends React.Component {
       
       this.setState({ reserved, state });
     })
+  }
+  getNextState(json) {
+    if (!json.info)
+      return 'No name state information on chain'
+
+    const state = json.info.state;
+    const stats = json.info.stats;
+    switch (state) {
+      case 'OPENING':
+        return `${stats.blocksUntilBidding} blocks until BIDDING (~${stats.hoursUntilBidding} hours)`;
+      case 'BIDDING':
+        return `${stats.blocksUntilReveal} blocks until REVEAL (~${stats.hoursUntilReveal} hours)`;
+      case 'REVEAL':
+        return `${stats.blocksUntilClose} blocks until CLOSE (~${stats.hoursUntilClose} hours)`;
+      case 'CLOSED':
+        return `${stats.blocksUntilExpire} blocks until EXPIRE (~${stats.daysUntilExpire} days)`;
+      case 'REVOKED':
+        return `${stats.blocksUntilReopen} blocks until RE-OPEN (~${stats.hoursUntilReopen} hours)`;
+      default:
+        return 'Name is in unknown state';
+    }
   }
 }
