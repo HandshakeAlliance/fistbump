@@ -19,6 +19,33 @@ export interface NodeDataType extends NetworkType {
   memory: any;
 }
 
+export interface TxInputType {
+  value: number;
+  address: string;
+  path: {
+    name: 'default';
+    account: number;
+    change: boolean;
+    derivation: string;
+  }
+}
+
+export interface TxOutputType {
+  value: number;
+  address: string;
+  covenant: {
+    type: number;
+    items: [];
+    action: string;
+  },
+  path: {
+    name: 'default',
+    account: 0,
+    change: boolean;
+    derivation: string;
+  }
+}
+
 export interface WalletInfoType extends NetworkType {
   wid: number;
   id: string;
@@ -42,6 +69,33 @@ export interface WalletInfoType extends NetworkType {
     lockedunconfirmed: number;
     lockedconfirmed: number;
   };
+}
+
+export interface WalletTxType {
+  hash: string;
+  height: number;
+  block: number | null;
+  time: number;
+  mtime: number;
+  date: string;
+  mdate: string;
+  size: number
+  virtualSize: number
+  fee: number;
+  rate: number;
+  confirmations: number
+  inputs: TxInputType[],
+  outputs: TxOutputType[],
+  tx: string;
+}
+
+export type WalletType = {
+  data: WalletInfoType;
+  txHistory: [WalletTxType];
+}
+
+export interface WalletDisplayType extends WalletInfoType {
+  transactions: [WalletTxType];
 }
 
 export interface NameInfoType {
@@ -93,9 +147,14 @@ const setHsNodeInfo = (nodeInfo: NodeInfoType) => ({
   payload: nodeInfo,
 })
 
-const setWalletInfo = (walletInfo: WalletInfoType) => ({
+const setWalletInfo = (wallet: WalletType) => ({
   type: AT.SET_WALLET_INFO,
-  payload: walletInfo,
+  payload: wallet,
+})
+
+const setWalletTransactions = (txHistory: any) => ({
+  type: AT.SET_WALLET_TX_HISTORY,
+  payload: txHistory,
 })
 
 const setNameInfo = (nameInfo: NameInfoType) => ({

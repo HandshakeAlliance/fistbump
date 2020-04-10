@@ -46,7 +46,8 @@ const walletInfoInitialState = {}
 const walletInfo = (state = walletInfoInitialState, action: any) => {
   switch (action.type) {
     case AT.SET_WALLET_INFO:
-      return { ...action.payload }
+      const { data, txHistory } = action.payload
+      return { ...data, transactions: txHistory.reverse() }
     default:
       return state
   }

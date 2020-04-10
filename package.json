@@ -46,6 +46,7 @@
   "dependencies": {
     "@types/ramda": "^0.26.44",
     "@types/redux-logger": "^3.0.7",
+    "date-fns": "^2.12.0",
     "hs-client": "0.0.8",
     "ramda": "^0.27.0",
     "react": "^16.13.1",

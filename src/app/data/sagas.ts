@@ -49,8 +49,11 @@ const fetchWalletInfo = function* () {
   const nodeData = yield select(getSettings)
   const api = new Api(nodeData)
   const data = yield call(api.getWalletInfo)
+  const txHistory = yield call(api.getTransactions)
+  const walletInfo = { data, txHistory }
+
   if (!data.error) {
-    yield put(setWalletInfo(data))
+    yield put(setWalletInfo(walletInfo))
   } else {
     console.log('Fetch wallet info error', data.error)
   }

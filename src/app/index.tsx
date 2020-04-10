@@ -15,17 +15,19 @@ import WalletOverview from './views/Wallet/Overview'
 const Container = styled.div`
   background-color: #3c4043;
   color: rgba(255, 255, 255, .8);
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   font-size: 0.9rem;
+  height: 500px;
 `
 
 const Content = styled.div`
   padding: 0 20px;
   background: rgba(255, 255, 255, 0.1);
-  flex: 1;
+  height: 86%;
+  display: flex;
+  flex-direction: column;
 `
 
 const App = () => (
