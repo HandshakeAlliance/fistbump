@@ -30,6 +30,7 @@ const MenuBox = styled.div`
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
   box-shadow: -3px 6px 15px -1px #333;
+  z-index: 99;
 `
 
 const MenuItem = styled.div`
