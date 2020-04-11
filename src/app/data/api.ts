@@ -43,6 +43,9 @@ class Api {
       })
   }
   getNameInfo = (name: string) => this.client.execute('getnameinfo', [ name ])
+  getNameByHash = (hash: string) => {
+    return this.client.execute('getnamebyhash', [ hash ])
+  }
   getTransactions = () => this.wallet.getHistory('default')
 }
 

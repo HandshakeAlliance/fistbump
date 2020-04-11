@@ -1,5 +1,5 @@
 import { call, takeEvery, select, all, put } from 'redux-saga/effects';
-import { values } from 'ramda'
+import { path, values } from 'ramda'
 import AT from '../store/actionTypes'
 import Api from './api'
 import { getNameSearch, getNodeInfo, getSettings, nameInfo } from './selectors'
@@ -12,6 +12,7 @@ import {
   setWalletInfo,
   setSavedNames,
   removeHSNodeInfo,
+  WalletTxType,
 } from '../store/actions'
 
 const fetchNameInfo = function* () {
@@ -50,7 +51,13 @@ const fetchWalletInfo = function* () {
   const api = new Api(nodeData)
   const data = yield call(api.getWalletInfo)
   const txHistory = yield call(api.getTransactions)
-  const walletInfo = { data, txHistory }
+  const historyWithNames = yield all(txHistory.map(function*(tx: WalletTxType) {
+    const nameHash: string | undefined =
+      path(['outputs', 0, 'covenant', 'items', 0], tx)
+    const name = nameHash ? yield call(api.getNameByHash, nameHash) : tx.hash
+    return { ...tx, name }
+  }))
+  const walletInfo = { data, txHistory: historyWithNames }
 
   if (!data.error) {
     yield put(setWalletInfo(walletInfo))

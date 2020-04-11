@@ -87,6 +87,7 @@ export interface WalletTxType {
   inputs: TxInputType[],
   outputs: TxOutputType[],
   tx: string;
+  name?: string;
 }
 
 export type WalletType = {
