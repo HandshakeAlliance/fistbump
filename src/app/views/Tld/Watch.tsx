@@ -11,7 +11,9 @@ const Container = styled.div`
   flex: 1;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 1rem;
+  overflow-y: scroll;
+  transform: translateX(-20px);
+  width: 100vw;
 `
 
 const Row = styled.div`
@@ -19,6 +21,9 @@ const Row = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  border: solid rgba(255, 255, 255, .1);
+  border-width: 0 0 1px;
+  padding: 10px 20px;
 
   & svg {
     transform: translateY(-2px);
